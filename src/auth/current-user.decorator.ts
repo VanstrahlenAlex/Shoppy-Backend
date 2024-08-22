@@ -1,10 +1,9 @@
 /* eslint-disable prettier/prettier */
 
-import { createParamDecorator } from "@nestjs/common";
-import { ExecutionContextHost } from "@nestjs/core/helpers/execution-context-host";
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 
-const getCurrentUserByContext = (context: ExecutionContextHost) =>{
-	return context.switchToHttp().getRequest().user
+const getCurrentUserByContext = (context: ExecutionContext) =>{
+	return context.switchToHttp().getRequest().user;
 }
 
-export const CurrentUser = createParamDecorator((_data: unknown, context: ExecutionContextHost) => getCurrentUserByContext(context))
+export const CurrentUser = createParamDecorator((_data: unknown, context: ExecutionContext) => getCurrentUserByContext(context))

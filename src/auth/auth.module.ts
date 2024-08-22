@@ -10,17 +10,18 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
 	imports: [
-		ConfigModule,
+		ConfigModule.forRoot(),
 		JwtModule.registerAsync({
-		imports: [ConfigModule],
-		useFactory: (configService: ConfigService) => ({
-			secret: configService.getOrThrow('JWT_SECRET'),
-			signOptions: {
-			expiresIn: configService.getOrThrow('JWT_EXPIRATION'),
-			},
+			imports: [ConfigModule],
+			useFactory: (configService: ConfigService) => ({
+				secret: configService.getOrThrow('JWT_SECRET'),
+				signOptions: {
+					expiresIn: configService.getOrThrow('JWT_EXPIRATION'),
+				},
+			}),
+			inject: [ConfigService],
 		}),
-		inject: [ConfigService],
-		}),
+		ConfigModule,
 		UsersModule,
 	],
 	controllers: [AuthController],

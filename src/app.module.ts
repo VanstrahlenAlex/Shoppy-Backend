@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
 	imports: [LoggerModule.forRootAsync({
-		imports: [ConfigModule],
+		imports: [ConfigModule.forRoot()],
 		useFactory: (configService: ConfigService) => {
 			const isProduction = configService.get('NODE_ENV') === 'production';
 			return {
@@ -30,4 +30,8 @@ import { AuthModule } from './auth/auth.module';
 	controllers: [],
 	providers: [],
 })
-export class AppModule {}
+export class AppModule {
+	constructor(configService: ConfigService) {
+		console.log(configService.get('JWT_SECRET')); // Debe imprimir la clave secreta
+	}
+}
