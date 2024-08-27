@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateProductRequest } from './dto/create-product.request';
 import { CurrentUser } from 'src/auth/current-user.decorator';
@@ -19,5 +19,11 @@ export class ProductsController {
 		@CurrentUser() user: TokenPayload,
 	) {
 		return this.productsService.createProduct(body, user.userId)
+	}
+
+	@Get()
+	@UseGuards(JwtAuthGuard)
+	async getAllProducts() {
+		return this.productsService.getProducts();
 	}
 }
