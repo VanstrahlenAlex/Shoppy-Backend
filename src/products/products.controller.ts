@@ -1,10 +1,13 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, FileTypeValidator, Get, MaxFileSizeValidator, ParseFilePipe, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateProductRequest } from './dto/create-product.request';
 import { CurrentUser } from 'src/auth/current-user.decorator';
 import { TokenPayload } from 'src/auth/token-payload.interface';
 import { ProductsService } from './products.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Controller('products')
 export class ProductsController {
@@ -12,6 +15,13 @@ export class ProductsController {
 	constructor( private readonly productsService: ProductsService) {
 
 	}
+	@Get()
+	@UseGuards(JwtAuthGuard)
+	async getAllProducts() {
+		return this.productsService.getProducts();
+	}
+
+
 	@Post()
 	@UseGuards(JwtAuthGuard)
 	async createProduct(
@@ -21,9 +31,32 @@ export class ProductsController {
 		return this.productsService.createProduct(body, user.userId)
 	}
 
-	@Get()
+	@Post(':productId/image')
 	@UseGuards(JwtAuthGuard)
-	async getAllProducts() {
-		return this.productsService.getProducts();
+	@UseInterceptors(
+		FileInterceptor('image', {storage: diskStorage({
+			destination: 'public/products',
+			filename: (req, file, callback) => {
+				callback(null, 
+					`${req.params.productId}${extname(file.originalname)}`
+				)
+			}
+		})
+	})
+	)
+	uploadProductImage(
+		@UploadedFile(
+			new ParseFilePipe({
+				validators: [
+					new MaxFileSizeValidator({ maxSize: 500000}),
+					new FileTypeValidator({ fileType: 'image/jpeg'})
+				]
+			})
+		)
+		_file: Express.Multer.File
+	){
+
 	}
+	
+
 }
