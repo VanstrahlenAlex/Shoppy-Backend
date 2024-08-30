@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Body, Controller, FileTypeValidator, Get, MaxFileSizeValidator, ParseFilePipe, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, FileTypeValidator, Get, MaxFileSizeValidator, Param, ParseFilePipe, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateProductRequest } from './dto/create-product.request';
 import { CurrentUser } from 'src/auth/current-user.decorator';
@@ -8,6 +8,7 @@ import { ProductsService } from './products.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { PRODUCT_IMAGES } from './product-images';
 
 @Controller('products')
 export class ProductsController {
@@ -35,7 +36,7 @@ export class ProductsController {
 	@UseGuards(JwtAuthGuard)
 	@UseInterceptors(
 		FileInterceptor('image', {storage: diskStorage({
-			destination: 'public/products',
+			destination: PRODUCT_IMAGES,
 			filename: (req, file, callback) => {
 				callback(null, 
 					`${req.params.productId}${extname(file.originalname)}`
@@ -58,5 +59,16 @@ export class ProductsController {
 
 	}
 	
+	@Get()
+	@UseGuards(JwtAuthGuard)
+	async getProducts() {
+		return this.productsService.getProducts();
+	}
+
+	@Get(':productId')
+	@UseGuards(JwtAuthGuard)
+    async getProduct(@Param('productId') productId: string) {
+		return this.productsService.getProduct(+productId);
+	} 
 
 }
