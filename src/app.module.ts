@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { CheckoutModule } from './checkout/checkout.module';
 
 
 
@@ -36,7 +37,7 @@ import { join } from 'path';
 		ConfigModule.forRoot(), 
 		UsersModule, 
 		AuthModule, 
-		ProductsModule],
+		ProductsModule, CheckoutModule],
 	controllers: [],
 	providers: [],
 })

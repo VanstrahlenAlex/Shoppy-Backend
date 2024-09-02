@@ -28,6 +28,7 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/serve-static": "^4.0.2",
     "@prisma/client": "^5.18.0",
+    "@stripe/stripe-js": "^4.4.0",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
@@ -41,7 +42,8 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "save": "^2.9.0",
-    "shoppy-backend": "file:"
+    "shoppy-backend": "file:",
+    "stripe": "^16.9.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
